@@ -35,7 +35,7 @@
      <enum>QTabWidget::Triangular</enum>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>1</number>
     </property>
     <property name="iconSize">
      <size>
@@ -533,8 +533,8 @@
      <widget class="QWidget" name="formLayoutWidget">
       <property name="geometry">
        <rect>
-        <x>130</x>
-        <y>180</y>
+        <x>40</x>
+        <y>40</y>
         <width>261</width>
         <height>68</height>
        </rect>
@@ -581,8 +581,8 @@
      <widget class="QPushButton" name="OpenButton">
       <property name="geometry">
        <rect>
-        <x>310</x>
-        <y>330</y>
+        <x>20</x>
+        <y>140</y>
         <width>93</width>
         <height>28</height>
        </rect>
@@ -594,8 +594,8 @@
      <widget class="QPushButton" name="CloseButton">
       <property name="geometry">
        <rect>
-        <x>430</x>
-        <y>330</y>
+        <x>130</x>
+        <y>140</y>
         <width>93</width>
         <height>28</height>
        </rect>
@@ -607,8 +607,8 @@
      <widget class="QPushButton" name="RefreshButton">
       <property name="geometry">
        <rect>
-        <x>550</x>
-        <y>330</y>
+        <x>240</x>
+        <y>140</y>
         <width>93</width>
         <height>28</height>
        </rect>
