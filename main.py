@@ -20,14 +20,24 @@ class MainHMI(QMainWindow):
         loadUi(file,self)
         self.TabWidget.setCurrentIndex(1)
         
-        self.Button1.clicked.connect(self.Button1_Action)
         self.pushButton.clicked.connect(self.pushButton_action)
+        self.pushButton_2.clicked.connect(self.pushButton2_action)
+        self.pushButton_3.clicked.connect(self.pushButton3_action)
+        self.pushButton_4.clicked.connect(self.pushButton4_action)
+        self.pushButton_5.clicked.connect(self.pushButton5_action)
+        self.pushButton_6.clicked.connect(self.pushButton6_action)
+        self.pushButton_7.clicked.connect(self.pushButton7_action)
+        self.ClearButton.clicked.connect(self.ClearB)
         
         BaudRate_List = ("9600","38400","57600","115200")
         self.BaudRate_ComboBox.addItems(BaudRate_List)
 
-        self.Rutas_ComboBox.currentTextChanged.connect(self.test)
+        self.Rutas_ComboBox.currentTextChanged.connect(self.TriggerComboBox)
 
+        #delete later
+        #self.Map.setStyleSheet("background-color: white")
+        self.Map.setStyleSheet("border: 1px solid black; background-color: white")
+        self.FactibilidadLabel.setStyleSheet("border: 1px solid black")
 
         # Load and set the image to the QLabel
         self.ImagePaths = ("Icons\Battery\Empty.png",
@@ -36,6 +46,7 @@ class MainHMI(QMainWindow):
                            "Icons\Battery\Bar_3.png",
                            "Icons\Battery\Bar_4.png",
                            "Icons\Battery\Bar_5.png",
+                           "Icons\Battery\Bar_6.png"
                            )
 
         self.Batteries = {1:self.Battery1,
@@ -64,21 +75,87 @@ class MainHMI(QMainWindow):
             pixmap = QtGui.QPixmap(self.ImagePaths[3])
         elif Percentage <= 4*BarPercentage:
             pixmap = QtGui.QPixmap(self.ImagePaths[4])
+        elif Percentage <= 5*BarPercentage:
+            pixmap = QtGui.QPixmap(self.ImagePaths[5])
+        elif Percentage <= 6*BarPercentage:
+            pixmap = QtGui.QPixmap(self.ImagePaths[6])
 
         self.Batteries[Battery].setPixmap(pixmap)
 
     def closeEvent(self, event):
         serial_connection.close_port()
         print("Closing...")
-
-    def Button1_Action(self):
-        print("Button 1")
     
     def pushButton_action(self):
-        self.ChangeBatteryImage(1,33)
+        self.ChangeBatteryImage(1,0)
+        self.ChangeBatteryImage(2,0)
+        self.ChangeBatteryImage(3,0)
+        self.ChangeBatteryImage(4,0)
+
+    def pushButton2_action(self):
+        self.ChangeBatteryImage(1,17)
+        self.ChangeBatteryImage(2,17)
+        self.ChangeBatteryImage(3,17)
+        self.ChangeBatteryImage(4,17)
+
+    def pushButton3_action(self):
+        self.ChangeBatteryImage(1,34)
+        self.ChangeBatteryImage(2,34)
+        self.ChangeBatteryImage(3,34)
+        self.ChangeBatteryImage(4,34)
+
+    def pushButton4_action(self):
+        self.ChangeBatteryImage(1,51)
+        self.ChangeBatteryImage(2,51)
+        self.ChangeBatteryImage(3,51)
+        self.ChangeBatteryImage(4,51)
+
+    def pushButton5_action(self):
+        self.ChangeBatteryImage(1,67)
+        self.ChangeBatteryImage(2,67)
+        self.ChangeBatteryImage(3,67)
+        self.ChangeBatteryImage(4,67)
+    
+    def pushButton6_action(self):
+        self.ChangeBatteryImage(1,84)
+        self.ChangeBatteryImage(2,84)
+        self.ChangeBatteryImage(3,84)
+        self.ChangeBatteryImage(4,84)
+
+    def pushButton7_action(self):
+        self.ChangeBatteryImage(1,101)
+        self.ChangeBatteryImage(2,101)
+        self.ChangeBatteryImage(3,101)
+        self.ChangeBatteryImage(4,101)
         
-    def test(self):
-        print('klk')
+    def TriggerComboBox(self):
+        #print('klk')
+        Distancia_total = (0,40182.6, 44571.4, 42821.5)
+
+        # Load and set the image to the QLabel
+        MapPaths = ("Icons\Maps\Map1.png",
+                    "Icons\Maps\Map2.png",
+                    "Icons\Maps\Map3.png")
+
+        i = HMI.Rutas_ComboBox.currentIndex() 
+        self.DistanceTotal.setText(str(Distancia_total[i])+"m")
+
+        if i > 0:
+            pixmap = QtGui.QPixmap(MapPaths[i-1])
+            self.Map.setPixmap(pixmap)
+        else:
+            self.Map.clear()
+
+    def ClearB(self):
+        self.TimeRest.setText("")
+        self.TimeTotal.setText("")
+        self.Map.clear()
+        self.TimeTotal.setText("")
+        self.FactibilidadLabel.setStyleSheet("border: 1px solid black")
+        self.FactibilidadLabel.setText("")
+        self.Rutas_ComboBox.setCurrentIndex(0)
+        self.DistanciaRecorrida.setValue(0)
+
         
 class SerialPortConnection:
     def __init__(self, port, baudrate):
@@ -192,27 +269,36 @@ class Mediciones():
         i = HMI.Rutas_ComboBox.currentIndex() 
         print(i)
 
-        Distancia_total = (40182.6, 44571.4, 42821.5)
+        self.Distancia_total = (0,40182.6, 44571.4, 42821.5)
 
         T_asc = self.Altitud / self.Velocity_Asc
         T_des = self.Altitud / self.Velocity_Des
-        T_Vuelo = Distancia_total[i-1] / self.Velocity
+        T_Vuelo = self.Distancia_total[i] / self.Velocity
         T_total = T_Vuelo + T_asc + T_des
-        print(T_total)
+
+        #print(T_total)
 
         T_Recorrido = Distancia_Recorrida/self.Velocity + T_asc 
-        print(T_Recorrido)
+        #print(T_Recorrido)
 
         T_restante = T_total - T_Recorrido
-        print(T_restante)
+        #print(T_restante)
 
         T_disponible = self.T_Charge - T_Recorrido
-        print(T_disponible)
+        #print(T_disponible)
 
         if T_restante < T_disponible:
             print('no factible')
+            HMI.FactibilidadLabel.setStyleSheet("background-color: red ; border: 1px solid black")
+            HMI.FactibilidadLabel.setText("No factible!")
         else:
             print("es factible")    
+            HMI.FactibilidadLabel.setStyleSheet("background-color: green; border: 1px solid black")
+            HMI.FactibilidadLabel.setText("Factible!")
+
+
+        HMI.TimeRest.setText(str(round(T_restante,2))+"s")
+        HMI.TimeTotal.setText(str(round(T_total,2))+"s")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
@@ -228,7 +314,12 @@ if __name__ == "__main__":
     HMI.RefreshButton.clicked.connect(serial_connection.Refresh_Ports)
 
     HMI.Rutas_ComboBox.addItems(Fact.Rutas)
-    HMI.pushButton_2.clicked.connect(Fact.Factibilidad)
+    HMI.EnterButton.clicked.connect(Fact.Factibilidad)
+
+    HMI.VelocityText.setText(str(Fact.Velocity)+"m/s")
+    HMI.AltitudeText.setText(str(Fact.Altitud)+"m")
+    HMI.VelocityAsc_Text.setText(str(Fact.Velocity_Asc)+"m/s")
+    HMI.VelocityDesc_Text.setText(str(Fact.Velocity_Des)+"m/s")
 
     HMI.show()
     app.exec_()
