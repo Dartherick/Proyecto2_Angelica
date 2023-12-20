@@ -3,18 +3,17 @@ import numpy as np
 import SerialCommunication
 import serial
 
-COM = 'COM2'
+COM = 'COM3'
 BaudRate = 9600
 
+Cam = cv2.VideoCapture(0)
+
 try:
-    print('klk')
     SerialComm = SerialCommunication.SerialPortConnection(COM,BaudRate)
     SerialComm.open_port()
     Validate = False
 except serial.SerialException as error:
     print("Error opening serial port:", str(error))
-
-Cam = cv2.VideoCapture(0)
 
 redBajo1 = np.array([0, 100, 20], np.uint8)
 redAlto1 = np.array([8, 255, 255], np.uint8)
@@ -22,10 +21,10 @@ redBajo2 = np.array([175, 100, 20], np.uint8)
 redAlto2 = np.array([179, 255, 255], np.uint8)
 
 while (Cam.isOpened()):
-    Function, Message = SerialComm.ReceiveMessage() 
+    #Function, Message = SerialComm.ReceiveMessage() 
 
-    if (Function == 'CA') and (Message == '000'):
-        Validate = True
+    #if (Function == 'CA') and (Message == '000'):
+        #Validate = True
 
     ret, cap = Cam.read() 
 
@@ -82,8 +81,7 @@ while (Cam.isOpened()):
             if len(approx) == 3:
                 cv2.putText(cap, "Triangle", coords, font, 1, colour, 1) # Text on the image
                 
-                if Validate:
-                    SerialComm.SendMessage('CA001')
+                SerialComm.SendMessage('10')
                 
     #Displaying the image with the detected shapes onto the screen
     cv2.imshow("Modified Image", image2)
