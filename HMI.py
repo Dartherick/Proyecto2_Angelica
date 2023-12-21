@@ -1,15 +1,23 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtGui
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
 from PyQt5.uic import loadUi
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget
+from PyQt5.QtWidgets import QMainWindow
+
+
+import cv2
 
 class MainHMI(QMainWindow):
     def __init__(self,file):
         super(MainHMI, self).__init__()
         loadUi(file,self)
-        self.TabWidget.setCurrentIndex(1)
+        self.TabWidget.setCurrentIndex(3)
+        
+        #camera
+        self.EnableButton.clicked.connect(self.disconnectCamera)  # Connect the button click to disconnectCamera
+        self.cameraPaused = False  # Flag to track if the camera feed is paused
+
         
         self.pushButton.clicked.connect(self.pushButton_action)
         self.pushButton_2.clicked.connect(self.pushButton2_action)
@@ -120,8 +128,8 @@ class MainHMI(QMainWindow):
         self.ChangeBatteryImage(4,101)
         
     def TriggerComboBox(self):
-        #print('klk')
         Distancia_total = (0,40182.6, 44571.4, 42821.5)
+        Puntos = ('Punto 1', 'Punto 2', 'Punto 3', 'Punto 4', 'Punto 5', 'Punto 6', 'Punto 7')
 
         # Load and set the image to the QLabel
         MapPaths = ("Icons\Maps\Map1.png",
@@ -134,6 +142,14 @@ class MainHMI(QMainWindow):
         if i > 0:
             pixmap = QtGui.QPixmap(MapPaths[i-1])
             self.Map.setPixmap(pixmap)
+
+            self.Puntos_ComboBox.clear()
+            if i == 1:
+                self.Puntos_ComboBox.addItems(Puntos[0:6])
+            elif i == 2:
+                self.Puntos_ComboBox.addItems(Puntos)
+            elif i == 3:
+                self.Puntos_ComboBox.addItems(Puntos[0:5])
         else:
             self.Map.clear()
 
@@ -145,4 +161,24 @@ class MainHMI(QMainWindow):
         self.FactibilidadLabel.setStyleSheet("border: 1px solid black")
         self.FactibilidadLabel.setText("")
         self.Rutas_ComboBox.setCurrentIndex(0)
-        self.DistanciaRecorrida.setValue(0)
+        self.Puntos_ComboBox.clear()
+
+    def updateFrame(self, frame):
+        rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        h, w, ch = rgb_image.shape
+        bytes_per_line = ch * w
+        image = QImage(rgb_image.data, w, h, bytes_per_line, QImage.Format_RGB888)
+        pixmap = QPixmap.fromImage(image)
+        self.Camera_Window.setPixmap(pixmap)
+
+    def disconnectCamera(self):
+        if not self.cameraPaused:
+            self.cameraPaused = True  # Pause the camera feed
+            self.Camera_Window.setPixmap(QPixmap())  # Set the QLabel to black
+            self.EnableButton.setText('Disable Camera')
+        else:
+            self.cameraPaused = False  # Resume the camera feed
+            # Update the QLabel to display the camera feed
+            frame = self.camera.get_frame()  # Get a frame from the camera
+            self.updateFrame(frame)  # Update the frame in the QLabel
+            self.EnableButton.setText('Enable Camera')

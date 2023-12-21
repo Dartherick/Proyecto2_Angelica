@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>956</width>
-    <height>746</height>
+    <width>952</width>
+    <height>736</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,7 +35,7 @@
      <enum>QTabWidget::Triangular</enum>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>3</number>
     </property>
     <property name="iconSize">
      <size>
@@ -119,17 +119,20 @@
         </widget>
        </item>
        <item>
-        <widget class="QDoubleSpinBox" name="DistanciaRecorrida">
+        <widget class="QComboBox" name="Puntos_ComboBox">
          <property name="font">
           <font>
            <pointsize>8</pointsize>
           </font>
          </property>
-         <property name="maximum">
-          <double>50000.000000000000000</double>
+         <property name="sizeAdjustPolicy">
+          <enum>QComboBox::AdjustToMinimumContentsLength</enum>
          </property>
-         <property name="singleStep">
-          <double>100.000000000000000</double>
+         <property name="duplicatesEnabled">
+          <bool>false</bool>
+         </property>
+         <property name="frame">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -647,6 +650,19 @@
       </property>
       <property name="text">
        <string/>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="EnableButton">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>550</y>
+        <width>171</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Disable Camera</string>
       </property>
      </widget>
     </widget>
