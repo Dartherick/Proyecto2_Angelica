@@ -9,7 +9,6 @@ from HMI import MainHMI
 from SerialCom import SerialPortConnection
 from Med import Mediciones
 
-#from CameraTemp import Camera
 from Camera import Camera
 
 # Define a function to run when the UI exits
