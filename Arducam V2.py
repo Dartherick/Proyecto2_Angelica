@@ -3,7 +3,7 @@ import numpy as np
 import SerialCommunication
 import serial
 
-COM = 'COM3'
+COM = 'COM7'
 BaudRate = 9600
 
 Cam = cv2.VideoCapture(0)
