@@ -81,7 +81,7 @@ while (Cam.isOpened()):
             if len(approx) == 3:
                 cv2.putText(cap, "Triangle", coords, font, 1, colour, 1) # Text on the image
                 
-                SerialComm.SendMessage('41001')
+                SerialComm.SendMessage('1')
                 
     #Displaying the image with the detected shapes onto the screen
     cv2.imshow("Modified Image", image2)
