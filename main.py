@@ -25,14 +25,11 @@ def Factibilidad():
     Fact.Factibilidad(Ruta,Punto)
 
     if Fact.T_restante < Fact.T_disponible:
-        print('no factible')
         HMI.FactibilidadLabel.setStyleSheet("background-color: red ; border: 1px solid black")
         HMI.FactibilidadLabel.setText("No factible!")
-    else:
-        print("es factible")    
+    else:  
         HMI.FactibilidadLabel.setStyleSheet("background-color: green; border: 1px solid black")
         HMI.FactibilidadLabel.setText("Factible!")
-
 
     HMI.TimeRest.setText(str(round(Fact.T_restante,2))+"s")
     HMI.TimeTotal.setText(str(round(Fact.T_total,2))+"s")

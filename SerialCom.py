@@ -1,8 +1,11 @@
 import serial
 import serial.tools.list_ports
 import time
+from PyQt5.QtCore import QObject, pyqtSignal
 
-class SerialPortConnection:
+class SerialPortConnection(QObject):
+    SerialStatus = pyqtSignal()
+
     def __init__(self, port, baudrate):
         self.port = port
         self.baudrate = baudrate
@@ -55,7 +58,6 @@ class SerialPortConnection:
     def ReceiveMessage(self):
         if self.serial is not None and self.serial.is_open:
             pass
-
 
     @staticmethod
     def get_available_ports():

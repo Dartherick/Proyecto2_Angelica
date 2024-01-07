@@ -1,8 +1,6 @@
 import cv2
 import numpy as np
 
-from PyQt5.QtWidgets import QApplication
-import sys
 import cv2
 import threading
 from PyQt5.QtCore import QObject, pyqtSignal
@@ -90,7 +88,7 @@ class Camera(QObject):
                         cv2.putText(self.cap, "Triangle", coords, font, 1, colour, 1) # Text on the image
             
             if ret:
-                self.frameReady.emit(self.thresh_image)
+                self.frameReady.emit(self.cap)
 
 if __name__ == '__main__':
 

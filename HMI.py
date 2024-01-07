@@ -12,7 +12,7 @@ class MainHMI(QMainWindow):
     def __init__(self,file):
         super(MainHMI, self).__init__()
         loadUi(file,self)
-        self.TabWidget.setCurrentIndex(3)
+        self.TabWidget.setCurrentIndex(1)
         
         #camera
         self.EnableButton.clicked.connect(self.disconnectCamera)  # Connect the button click to disconnectCamera
@@ -147,9 +147,9 @@ class MainHMI(QMainWindow):
             if i == 1:
                 self.Puntos_ComboBox.addItems(Puntos[0:6])
             elif i == 2:
-                self.Puntos_ComboBox.addItems(Puntos)
-            elif i == 3:
                 self.Puntos_ComboBox.addItems(Puntos[0:5])
+            elif i == 3:
+                self.Puntos_ComboBox.addItems(Puntos)
         else:
             self.Map.clear()
 
@@ -162,6 +162,13 @@ class MainHMI(QMainWindow):
         self.FactibilidadLabel.setText("")
         self.Rutas_ComboBox.setCurrentIndex(0)
         self.Puntos_ComboBox.clear()
+    
+    def ProgressBar_Progression(self, Start, End, Time):
+        self.animation = QPropertyAnimation(self.ProgressBar, b"value")  # Create a QPropertyAnimation object for the progress bar value
+        self.animation.setDuration(Time)  # Set the duration of the animation in milliseconds
+        self.animation.setStartValue(Start)  # Set the start value of the animation
+        self.animation.setEndValue(End)  # Set the end value of the animation
+        self.animation.start()  # Start the animation
 
     def updateFrame(self, frame):
         rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
