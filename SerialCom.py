@@ -1,12 +1,14 @@
+import time
 import serial
 import serial.tools.list_ports
-import time
 from PyQt5.QtCore import QObject, pyqtSignal
 
 class SerialPortConnection(QObject):
-    SerialStatus = pyqtSignal()
+    OpenStatus = pyqtSignal()
+    DisableStatus = pyqtSignal()
 
     def __init__(self, port, baudrate):
+        super().__init__()
         self.port = port
         self.baudrate = baudrate
         self.serial = None
@@ -17,6 +19,7 @@ class SerialPortConnection(QObject):
 
         try:
             self.serial = serial.Serial(self.port, self.baudrate)
+            self.OpenStatus.emit()
             time.sleep(2)
             print("Serial port opened successfully.")
         except serial.SerialException as error:
@@ -25,6 +28,7 @@ class SerialPortConnection(QObject):
     def close_port(self):
         if self.serial is not None and self.serial.is_open:
             self.serial.close()
+            self.DisableStatus.emit()
             print("Serial port closed.")
         else:
             print('There is no open communication.')
@@ -41,7 +45,7 @@ class SerialPortConnection(QObject):
 
     def SendMessage(self,Text):
         if Text is not None:
-            Message = "<"+str(Text)+">"
+            Message = "<"+str(Text)+">"+"\n"
 
             if self.serial is not None and self.serial.is_open:
                 try:

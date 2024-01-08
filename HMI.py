@@ -1,18 +1,17 @@
+import cv2
+import sys
 from PyQt5 import QtGui
-from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-
+from PyQt5.QtCore import *
 from PyQt5.uic import loadUi
 from PyQt5.QtWidgets import QMainWindow
-
-
-import cv2
 
 class MainHMI(QMainWindow):
     def __init__(self,file):
         super(MainHMI, self).__init__()
         loadUi(file,self)
-        self.TabWidget.setCurrentIndex(1)
+        self.TabWidget.setCurrentIndex(3)
+        self.EnableTabs(False)
         
         #camera
         self.EnableButton.clicked.connect(self.disconnectCamera)  # Connect the button click to disconnectCamera
@@ -163,8 +162,8 @@ class MainHMI(QMainWindow):
         self.Rutas_ComboBox.setCurrentIndex(0)
         self.Puntos_ComboBox.clear()
     
-    def ProgressBar_Progression(self, Start, End, Time):
-        self.animation = QPropertyAnimation(self.ProgressBar, b"value")  # Create a QPropertyAnimation object for the progress bar value
+    def ProgressBar_Progression(self,ProgressBar, Start, End, Time):
+        self.animation = QPropertyAnimation(ProgressBar, b"value")  # Create a QPropertyAnimation object for the progress bar value
         self.animation.setDuration(Time)  # Set the duration of the animation in milliseconds
         self.animation.setStartValue(Start)  # Set the start value of the animation
         self.animation.setEndValue(End)  # Set the end value of the animation
@@ -181,11 +180,18 @@ class MainHMI(QMainWindow):
     def disconnectCamera(self):
         if not self.cameraPaused:
             self.cameraPaused = True  # Pause the camera feed
-            self.Camera_Window.setPixmap(QPixmap())  # Set the QLabel to black
-            self.EnableButton.setText('Disable Camera')
-        else:
-            self.cameraPaused = False  # Resume the camera feed
-            # Update the QLabel to display the camera feed
-            frame = self.camera.get_frame()  # Get a frame from the camera
-            self.updateFrame(frame)  # Update the frame in the QLabel
+            black_image = QPixmap(1, 1)  # Create a 1x1 black image
+            black_image.fill(Qt.black)  # Fill the image with black color
+            self.Camera_Window.setPixmap(black_image)  # Set the <link>QLabel</link> to display the black image
             self.EnableButton.setText('Enable Camera')
+    
+    def SaveImage(self,frame):
+        pass
+
+    def EnableTabs(self,State):
+        self.TabWidget.setTabEnabled(0, State)
+        self.TabWidget.setTabEnabled(1, State)
+        self.TabWidget.setTabEnabled(2, State)
+        self.TabWidget.setTabEnabled(3, State)
+        self.TabWidget.setTabEnabled(5, State)
+        self.TabWidget.setTabEnabled(6, State)

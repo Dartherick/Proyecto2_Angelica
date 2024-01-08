@@ -1,12 +1,11 @@
 import cv2
-import numpy as np
-
-import cv2
 import threading
+import numpy as np
 from PyQt5.QtCore import QObject, pyqtSignal
 
 class Camera(QObject):
     frameReady = pyqtSignal(object)
+    detect_triangle = pyqtSignal()
 
     def __init__(self,id):
         super().__init__()
@@ -79,13 +78,14 @@ class Camera(QObject):
                 # the contour/shape has, and then based on that result the program will guess the shape (for example, if it has 3 edges
                 # then the chances that the shape is a triangle are very good.)
                 if (cv2.contourArea(contour)>= 7000):
-                    print(f'area = {cv2.contourArea(contour)} & lados = {len(approx)}')
+                    #print(f'area = {cv2.contourArea(contour)} & lados = {len(approx)}')
                     cv2.putText(self.cap,f'area = {cv2.contourArea(contour)} & lados = {len(approx)}',(0,0),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,0),2,cv2.LINE_AA)
 
                     cv2.drawContours(self.cap, [contour], 0, colour, 3)  #Drawing the outer-edges onto the image
 
                     if len(approx) == 3:
                         cv2.putText(self.cap, "Triangle", coords, font, 1, colour, 1) # Text on the image
+                        self.detect_triangle.emit()
             
             if ret:
                 self.frameReady.emit(self.cap)
