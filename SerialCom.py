@@ -6,6 +6,7 @@ from PyQt5.QtCore import QObject, pyqtSignal
 class SerialPortConnection(QObject):
     OpenStatus = pyqtSignal()
     DisableStatus = pyqtSignal()
+    UpdatedPortList = pyqtSignal()
 
     def __init__(self, port, baudrate):
         super().__init__()
@@ -13,7 +14,7 @@ class SerialPortConnection(QObject):
         self.baudrate = baudrate
         self.serial = None
 
-    def open_port(self,Ports,Baudrates):
+    def open_port(self, Ports, Baudrates):
         self.port = Ports
         self.baudrate = int(Baudrates)
 
@@ -39,6 +40,7 @@ class SerialPortConnection(QObject):
 
         # Get the updated list of available ports
         available_ports = self.get_available_ports()
+        self.UpdatedPortList.emit()
 
         print('Refreshed')
         return self.get_available_ports()
@@ -61,7 +63,14 @@ class SerialPortConnection(QObject):
 
     def ReceiveMessage(self):
         if self.serial is not None and self.serial.is_open:
-            pass
+            Message = self.serial.readline().decode().replace('\r\n','')
+            print(Message)
+            if (Message[0] == "<") and (Message[-1] == ">"):
+                Function = Message[1:3]
+                Parsed_Message = Message[3:-1]
+                print(Parsed_Message)
+
+                return Function,Parsed_Message
 
     @staticmethod
     def get_available_ports():

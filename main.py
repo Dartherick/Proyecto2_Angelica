@@ -68,6 +68,9 @@ if __name__ == "__main__":
 
     serial_connection.OpenStatus.connect(lambda : StartFunction(True,HMI.SerialProgressBar,0,100,5))
     serial_connection.DisableStatus.connect(lambda : StartFunction(False,HMI.SerialProgressBar,100,0,5))
+    #no funciona
+    #serial_connection.UpdatedPortList.connect(lambda : HMI.Refresh_Serial_Ports(sorted(serial_connection.Refresh_Ports())))
+    serial_connection.UpdatedPortList.connect(lambda : sorted(serial_connection.Refresh_Ports()))
 
     # Connect the aboutToQuit signal to the on_ui_exit function
     app.aboutToQuit.connect(on_ui_exit)

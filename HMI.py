@@ -195,3 +195,7 @@ class MainHMI(QMainWindow):
         self.TabWidget.setTabEnabled(3, State)
         self.TabWidget.setTabEnabled(5, State)
         self.TabWidget.setTabEnabled(6, State)
+    
+    def Refresh_Serial_Ports(self,Port_List):
+        self.SerialPort_ComboBox['values'] = ()
+        self.SerialPort_ComboBox.addItems(Port_List)
