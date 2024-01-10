@@ -20,22 +20,26 @@
    <widget class="QTabWidget" name="TabWidget">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>941</width>
-      <height>731</height>
+      <x>0</x>
+      <y>0</y>
+      <width>951</width>
+      <height>741</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <pointsize>9</pointsize>
+      <underline>true</underline>
      </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(197, 197, 197);</string>
     </property>
     <property name="tabShape">
      <enum>QTabWidget::Triangular</enum>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <property name="iconSize">
      <size>
@@ -53,24 +57,11 @@
      <attribute name="title">
       <string>Home</string>
      </attribute>
-     <widget class="QLabel" name="label_17">
-      <property name="geometry">
-       <rect>
-        <x>120</x>
-        <y>250</y>
-        <width>121</width>
-        <height>61</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Clima</string>
-      </property>
-     </widget>
      <widget class="QLabel" name="label_18">
       <property name="geometry">
        <rect>
         <x>340</x>
-        <y>210</y>
+        <y>240</y>
         <width>121</width>
         <height>71</height>
        </rect>
@@ -82,8 +73,8 @@
      <widget class="QLabel" name="label_19">
       <property name="geometry">
        <rect>
-        <x>550</x>
-        <y>200</y>
+        <x>650</x>
+        <y>250</y>
         <width>101</width>
         <height>61</height>
        </rect>
@@ -91,6 +82,39 @@
       <property name="text">
        <string>Fact</string>
       </property>
+     </widget>
+     <widget class="QWidget" name="verticalLayoutWidget_3">
+      <property name="geometry">
+       <rect>
+        <x>70</x>
+        <y>130</y>
+        <width>391</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QLabel" name="Clima_Label">
+         <property name="text">
+          <string>Clima</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="Temperature_Label">
+         <property name="text">
+          <string>Temperature</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="Wind_Label">
+         <property name="text">
+          <string>Viento</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </widget>
     <widget class="QWidget" name="Factibilidad_Tab">
@@ -111,7 +135,7 @@
         <widget class="QLabel" name="label_3">
          <property name="font">
           <font>
-           <pointsize>8</pointsize>
+           <pointsize>9</pointsize>
            <underline>true</underline>
           </font>
          </property>
@@ -145,7 +169,7 @@
         <widget class="QLabel" name="label_4">
          <property name="font">
           <font>
-           <pointsize>8</pointsize>
+           <pointsize>9</pointsize>
            <underline>true</underline>
           </font>
          </property>
@@ -186,7 +210,7 @@
         <widget class="QLabel" name="label_5">
          <property name="font">
           <font>
-           <pointsize>8</pointsize>
+           <pointsize>9</pointsize>
            <underline>true</underline>
           </font>
          </property>
@@ -214,7 +238,7 @@
         <widget class="QLabel" name="label_7">
          <property name="font">
           <font>
-           <pointsize>8</pointsize>
+           <pointsize>9</pointsize>
            <underline>true</underline>
           </font>
          </property>
@@ -242,7 +266,7 @@
         <widget class="QLabel" name="label_8">
          <property name="font">
           <font>
-           <pointsize>8</pointsize>
+           <pointsize>9</pointsize>
            <underline>true</underline>
           </font>
          </property>
@@ -282,7 +306,7 @@
         <widget class="QLabel" name="label_9">
          <property name="font">
           <font>
-           <pointsize>9</pointsize>
+           <pointsize>10</pointsize>
            <weight>75</weight>
            <bold>true</bold>
            <underline>true</underline>
@@ -307,7 +331,8 @@
         <widget class="QLabel" name="label_12">
          <property name="font">
           <font>
-           <pointsize>8</pointsize>
+           <pointsize>9</pointsize>
+           <underline>true</underline>
           </font>
          </property>
          <property name="text">
@@ -332,7 +357,8 @@
         <widget class="QLabel" name="label_13">
          <property name="font">
           <font>
-           <pointsize>8</pointsize>
+           <pointsize>9</pointsize>
+           <underline>true</underline>
           </font>
          </property>
          <property name="text">
@@ -351,7 +377,8 @@
         <widget class="QLabel" name="label_14">
          <property name="font">
           <font>
-           <pointsize>8</pointsize>
+           <pointsize>9</pointsize>
+           <underline>true</underline>
           </font>
          </property>
          <property name="text">
@@ -370,7 +397,8 @@
         <widget class="QLabel" name="label_15">
          <property name="font">
           <font>
-           <pointsize>8</pointsize>
+           <pointsize>9</pointsize>
+           <underline>true</underline>
           </font>
          </property>
          <property name="text">
@@ -398,7 +426,7 @@
       </property>
       <property name="font">
        <font>
-        <pointsize>8</pointsize>
+        <pointsize>9</pointsize>
        </font>
       </property>
       <property name="text">
@@ -416,6 +444,12 @@
       </property>
       <property name="styleSheet">
        <string notr="true">background-color: rgb(255, 255, 255);</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="lineWidth">
+       <number>2</number>
       </property>
       <property name="text">
        <string/>
@@ -458,7 +492,7 @@
       </property>
       <property name="font">
        <font>
-        <pointsize>8</pointsize>
+        <pointsize>9</pointsize>
        </font>
       </property>
       <property name="text">
@@ -681,8 +715,8 @@
      <widget class="QLabel" name="Camera_Window">
       <property name="geometry">
        <rect>
-        <x>120</x>
-        <y>40</y>
+        <x>150</x>
+        <y>50</y>
         <width>620</width>
         <height>480</height>
        </rect>
@@ -696,37 +730,43 @@
        <string notr="true">background-color: rgb(255, 255, 255);</string>
       </property>
       <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Plain</enum>
+      </property>
+      <property name="lineWidth">
+       <number>2</number>
       </property>
       <property name="text">
        <string/>
       </property>
      </widget>
-     <widget class="QPushButton" name="EnableButton">
+     <widget class="QWidget" name="horizontalLayoutWidget_4">
       <property name="geometry">
        <rect>
-        <x>200</x>
+        <x>180</x>
         <y>570</y>
-        <width>171</width>
-        <height>41</height>
+        <width>561</width>
+        <height>51</height>
        </rect>
       </property>
-      <property name="text">
-       <string>Disable Camera</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="EnableButton_2">
-      <property name="geometry">
-       <rect>
-        <x>450</x>
-        <y>570</y>
-        <width>171</width>
-        <height>41</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Save as Picture</string>
-      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <widget class="QPushButton" name="EnableButton">
+         <property name="text">
+          <string>Disable Camera</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="EnableButton_2">
+         <property name="text">
+          <string>Save as Picture</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </widget>
     <widget class="QWidget" name="SerialCom_Tab">
