@@ -38,6 +38,9 @@ def on_ui_exit():
     serial_connection.close_port()
     print("Closing Serial Port")
 
+def MessageFunc():
+    Function,Message = serial_connection.ReceiveMessage()
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     HMI = MainHMI("HMI.ui")
