@@ -77,13 +77,14 @@ class Camera(QObject):
                 # This is the part where we actually guess which shape we have detected. The program will look at the amount of edges
                 # the contour/shape has, and then based on that result the program will guess the shape (for example, if it has 3 edges
                 # then the chances that the shape is a triangle are very good.)
-                if (cv2.contourArea(contour)>= 7000):
+                #Previous area value = 7000
+
+                if (cv2.contourArea(contour)>= 10500):
                     #print(f'area = {cv2.contourArea(contour)} & lados = {len(approx)}')
                     cv2.putText(self.cap,f'area = {cv2.contourArea(contour)} & lados = {len(approx)}',(0,0),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,0),2,cv2.LINE_AA)
 
-                    cv2.drawContours(self.cap, [contour], 0, colour, 3)  #Drawing the outer-edges onto the image
-
                     if len(approx) == 3:
+                        cv2.drawContours(self.cap, [contour], 0, colour, 3)  #Drawing the outer-edges onto the image
                         cv2.putText(self.cap, "Triangle", coords, font, 1, colour, 1) # Text on the image
                         self.detect_triangle.emit()
             
