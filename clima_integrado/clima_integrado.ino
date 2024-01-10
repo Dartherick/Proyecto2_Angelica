@@ -1,4 +1,4 @@
-// Incluimos librería ///////////ENVIAR DATOS DESPUÉS DE CADA PASO DE LA SECUENCIA EN EL MAIN
+// Incluimos librería
 #include <Adafruit_Sensor.h>
 #include <DHT.h>
  
@@ -7,87 +7,74 @@
 
 // Defining what type of sensor I'm using
 #define DHTTYPE DHT11
+
+// Defining wind pin data
+#define WINDPIN A15
  
-// Inizialized sensor instance DHT
+// Inizialized sensor instance
 DHT dht(DHTPIN, DHTTYPE);
 
 //anemómetro
 float lectura;
 float volt;
 
-char humedad;
-char temp_c;
-char volt_vel;
- 
+//clima
+float h;    // Reading humidity
+float t_c;  // Reading temperature in C (By default)
+
+
 void setup() {
   // Inizialited serial comunication
   Serial.begin(9600);
  
   // Starting sensor DHT
   dht.begin();
-
-  // Pin de lectura de anemometer
-  pinMode(A15,INPUT);
  
+  //anemometro
+  pinMode(WINDPIN,INPUT);
 }
-
+ 
 void loop() {
-  dth();
-  sendMessage(humedad);
-  sendMessage(temp_c);
-  anemometer();
-  sendMessage(volt_vel);
+  delay(1000);
+  Clima();
+  delay(1000);
+  Viento();
 }
- 
-void dth() {
+
+void Clima(){
   // Reading humidity
-  float h = dht.readHumidity();
+  h = dht.readHumidity();
   // Reading temperature in C (By default)
-  float t_c = dht.readTemperature();
-  // Reading temperature in Fahreheit
-  float t_f = dht.readTemperature(true);
+  t_c = dht.readTemperature();
  
   // Checking in reading values are correct or valid.
-  if (isnan(h) || isnan(t_c) || isnan(t_f)) {
+  if (isnan(h) || isnan(t_c)) {
     Serial.println("Error while reading DHT Sensor");
   }
- 
-  Serial.print("Humedad: ");
-  Serial.print(h);
-  Serial.print(" %\t");
-  Serial.print("Temperatura: ");
-  Serial.print(t_c);
-  Serial.print(" *C ");
-  Serial.print(t_f);
-  Serial.print(" *F\n");
-
-  dtostrf(h, 5, 2, humedad);
-  dtostrf(t_c, 5, 2, temp_c);
-  return humedad;
-  return temp_c;
-
-  delay(1000);
+  else{
+    SendFloatMessage(h,"8");
+    SendFloatMessage(t_c,"9");
+  }
 }
 
-void anemometer() {
-  lectura = analogRead(A15);
+void Viento() {
+  lectura = analogRead(WINDPIN);
   volt = lectura /1023 * 5.0;
-  Serial.println(volt);
-  dtostrf(volt, 4, 2, volt_vel);
-  return volt_vel;
-
-  delay(500);
+  //Serial.println(volt);
+  SendFloatMessage(volt,"11");
 }
 
-void sendMessage(const char* message) {
-  // Create a buffer to store the formatted message
-  char Formatted_Message[10];
+void SendFloatMessage(float Float,char Function[3]){
+  char message[15];
+  char floatStr[10];
 
-  Formatted_Message[0] = '<';
-  strcpy(Formatted_Message + 1, message);
-  Formatted_Message[strlen(message) + 1] = '>';
-  Formatted_Message[strlen(message) + 2] = '\0'; // Null-terminate the string
+  dtostrf(Float, 2, 2, floatStr);
+  sprintf(message,"<%s%s>",Function,floatStr); // Create the message in the desired structure
+  Serial.println(message);  // Send the complete message
+}
 
-  // Send the formatted message via serial communication
-  Serial.write(Formatted_Message);
+void SendStrMessage(char message[10]){
+  char FormattedMessage[10];
+  sprintf(FormattedMessage, "<%s>", message);  // Combine the float string with "<" and ">"
+  Serial.println(FormattedMessage);  // Send the complete message
 }

@@ -60,8 +60,8 @@ void loop() {
   delay(7000);
 //  movGIR();
 //  delay(7000);
-  movC();
-  delay(1000);
+//  movC();
+//  delay(1000);
   //movD_END();
   delay(1000);
   delay(15000);
@@ -285,7 +285,7 @@ void movD_END() {
   }
 
   int state = limitSwitchE1.getState();
-  if(state == HIGH){
+  while(state == HIGH){
     digitalWrite(dirPin4,LOW); //HIGH HACIA EL CENTRO
     digitalWrite(enPin4,LOW);
     digitalWrite(stepPin4,HIGH);
@@ -298,8 +298,9 @@ void movD_END() {
     delayMicroseconds(600);
     digitalWrite(stepPin3,LOW);
     delayMicroseconds(600);
+    limitSwitchE1.loop(); // MUST call the loop() function first
+    state = limitSwitchE1.getState();
   }
-  else{
     digitalWrite(dirPin4,LOW); //HIGH HACIA EL CENTRO
     digitalWrite(enPin4,LOW);
     digitalWrite(stepPin4,LOW);
@@ -312,7 +313,6 @@ void movD_END() {
     delayMicroseconds(600);
     digitalWrite(stepPin3,LOW);
     delayMicroseconds(600);
-  }
 }
 
 void movGIR() {
