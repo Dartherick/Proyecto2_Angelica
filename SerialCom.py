@@ -64,11 +64,11 @@ class SerialPortConnection(QObject):
     def ReceiveMessage(self):
         if self.serial is not None and self.serial.is_open:
             Message = self.serial.readline().decode().replace('\r\n','')
-            print(Message)
+            #print(Message)
             if (Message[0] == "<") and (Message[-1] == ">"):
                 Function = Message[1:3]
                 Parsed_Message = Message[3:-1]
-                print(Parsed_Message)
+                #print(Parsed_Message)
 
                 return Function,Parsed_Message
 
