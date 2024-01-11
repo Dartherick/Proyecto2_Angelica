@@ -10,6 +10,7 @@ from SerialCom import SerialPortConnection
 from Med import Mediciones
 
 from Camera import Camera
+import threading
 
 def StartFunction(Status,ProgressBar,Start,End,Time):
     HMI.ProgressBar_Progression(ProgressBar,Start,End,Time)
@@ -41,10 +42,19 @@ def on_ui_exit():
 def MessageFunc():
     Function,Message = serial_connection.ReceiveMessage()
 
+    if Function == "80": #Temperatura
+        HMI.Temperature_Label.setText(f"Temperatura {Message}C")
+    elif Function == "90": #Humedad
+        HMI.Humidity_Label.setText(f"Humedad {Message}")
+    elif Function == "10": #Velocidad viento
+        HMI.Wind_Label.setText(f"Viento {Message}V")
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     HMI = MainHMI("HMI.ui")
     Fact = Mediciones()
+
+    message_thread = threading.Thread(target=MessageFunc)
 
     #camara
     Arducam = Camera(0)
@@ -69,7 +79,7 @@ if __name__ == "__main__":
     HMI.CloseButton.clicked.connect(serial_connection.close_port)
     HMI.RefreshButton.clicked.connect(serial_connection.Refresh_Ports)
 
-    serial_connection.OpenStatus.connect(lambda : StartFunction(True,HMI.SerialProgressBar,0,100,5))
+    serial_connection.OpenStatus.connect(lambda: (StartFunction(True, HMI.SerialProgressBar, 0, 100, 5), message_thread.start()))
     serial_connection.DisableStatus.connect(lambda : StartFunction(False,HMI.SerialProgressBar,100,0,5))
     #no funciona
     #serial_connection.UpdatedPortList.connect(lambda : HMI.Refresh_Serial_Ports(sorted(serial_connection.Refresh_Ports())))
