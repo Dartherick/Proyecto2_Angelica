@@ -29,7 +29,7 @@
     <property name="font">
      <font>
       <pointsize>9</pointsize>
-      <underline>true</underline>
+      <underline>false</underline>
      </font>
     </property>
     <property name="styleSheet">
@@ -94,9 +94,9 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
-        <widget class="QLabel" name="Clima_Label">
+        <widget class="QLabel" name="Humidity_Label">
          <property name="text">
-          <string>Clima</string>
+          <string>Humedad</string>
          </property>
         </widget>
        </item>
@@ -473,6 +473,9 @@
         <weight>75</weight>
         <bold>true</bold>
        </font>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
       </property>
       <property name="text">
        <string/>
