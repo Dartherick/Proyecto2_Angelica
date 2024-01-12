@@ -1,3 +1,5 @@
+import numpy as np
+
 class Mediciones():
     def __init__(self):
         #Factibilidad
@@ -12,6 +14,13 @@ class Mediciones():
                       "Hospital Municipal Villa Altagracia - Hospital Bonao")
         
         self.Disponibilidad = True
+
+        Ts = (0,75,150,225,300,375,450,525,600,675,750,825,900,975,1050,1125,1200,1275,1350,1425,1500)
+        BatteryPercentage = (100,90,82,77,75,74.4,73.8,73,72.4,72,71.4,70.8,70.4,70,66,60,56,50,40,32,19.6)
+        VoltageList = (5,4.5,4.1,3.85,3.75,3.72,3.69,3.65,3.62,3.6,3.57,3.54,3.52,3.5,3.3,3,2.8,2.5,2,1.6,0.98)
+
+        self.np_array = np.column_stack((Ts, BatteryPercentage, VoltageList))
+        a = np.interp(550,self.np_array[:,0],self.np_array[:,1])
 
     def Factibilidad(self,i,j):
         self.Distancia_total = (0,40182.6, 44571.4, 42821.5)

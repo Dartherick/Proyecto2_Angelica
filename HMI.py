@@ -50,15 +50,12 @@ class MainHMI(QMainWindow):
         self.Batteries = {1:self.Battery1,
                           2:self.Battery2,
                           3:self.Battery3,
-                          4:self.Battery4,
                           }
 
-        print(self.ImagePaths[0])
         pixmap = QtGui.QPixmap(self.ImagePaths[0])
         self.Batteries[1].setPixmap(pixmap)
         self.Batteries[2].setPixmap(pixmap)
         self.Batteries[3].setPixmap(pixmap)
-        self.Batteries[4].setPixmap(pixmap)
 
     def ChangeBatteryImage(self,Battery,Percentage):
         BarPercentage = 100/5
@@ -79,52 +76,41 @@ class MainHMI(QMainWindow):
             pixmap = QtGui.QPixmap(self.ImagePaths[6])
 
         self.Batteries[Battery].setPixmap(pixmap)
-
-    def closeEvent(self, event):
-        #serial_connection.close_port()
-        print("Closing...")
     
     def pushButton_action(self):
         self.ChangeBatteryImage(1,0)
         self.ChangeBatteryImage(2,0)
         self.ChangeBatteryImage(3,0)
-        self.ChangeBatteryImage(4,0)
 
     def pushButton2_action(self):
         self.ChangeBatteryImage(1,17)
         self.ChangeBatteryImage(2,17)
         self.ChangeBatteryImage(3,17)
-        self.ChangeBatteryImage(4,17)
 
     def pushButton3_action(self):
         self.ChangeBatteryImage(1,34)
         self.ChangeBatteryImage(2,34)
         self.ChangeBatteryImage(3,34)
-        self.ChangeBatteryImage(4,34)
 
     def pushButton4_action(self):
         self.ChangeBatteryImage(1,51)
         self.ChangeBatteryImage(2,51)
         self.ChangeBatteryImage(3,51)
-        self.ChangeBatteryImage(4,51)
 
     def pushButton5_action(self):
         self.ChangeBatteryImage(1,67)
         self.ChangeBatteryImage(2,67)
         self.ChangeBatteryImage(3,67)
-        self.ChangeBatteryImage(4,67)
     
     def pushButton6_action(self):
         self.ChangeBatteryImage(1,84)
         self.ChangeBatteryImage(2,84)
         self.ChangeBatteryImage(3,84)
-        self.ChangeBatteryImage(4,84)
 
     def pushButton7_action(self):
         self.ChangeBatteryImage(1,101)
         self.ChangeBatteryImage(2,101)
         self.ChangeBatteryImage(3,101)
-        self.ChangeBatteryImage(4,101)
         
     def TriggerComboBox(self):
         Distancia_total = (0,40182.6, 44571.4, 42821.5)

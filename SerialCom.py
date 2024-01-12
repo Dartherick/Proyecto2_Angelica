@@ -2,6 +2,7 @@ import time
 import serial
 import serial.tools.list_ports
 from PyQt5.QtCore import QObject, pyqtSignal
+import numpy
 
 class SerialPortConnection(QObject):
     OpenStatus = pyqtSignal()
@@ -68,7 +69,7 @@ class SerialPortConnection(QObject):
             if Message:
                 if (Message[0] == "<") and (Message[-1] == ">"):
                     Function = Message[1:3]
-                    Parsed_Message = Message[3:-1]
+                    Parsed_Message = float(Message[3:-1])
                     return Function,Parsed_Message
             else:
                 return None,None
