@@ -51,7 +51,13 @@ def MessageFunc():
             elif Function == "90": #Humedad
                 HMI.Humidity_Label.setText(f"Humedad {Message}")
             elif Function == "10": #Velocidad viento
-                HMI.Wind_Label.setText(f"Viento {Message}V")
+
+                '''
+                0-5.5V = 0-6000RPM
+                1 Km/h = 63RPM
+                '''
+                Message = (6000*Message/5.5)/63 #Converting Volts to Km/h
+                HMI.Wind_Label.setText(f"Viento {Message}RPM")
 
         sleep(0.5)
 

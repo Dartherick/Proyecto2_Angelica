@@ -20,7 +20,8 @@ class Mediciones():
         VoltageList = (5,4.5,4.1,3.85,3.75,3.72,3.69,3.65,3.62,3.6,3.57,3.54,3.52,3.5,3.3,3,2.8,2.5,2,1.6,0.98)
 
         self.np_array = np.column_stack((Ts, BatteryPercentage, VoltageList))
-        a = np.interp(550,self.np_array[:,0],self.np_array[:,1])
+
+        self.DatosClima = np.empty([1, 3], dtype=float)
 
     def Factibilidad(self,i,j):
         self.Distancia_total = (0,40182.6, 44571.4, 42821.5)
@@ -37,6 +38,10 @@ class Mediciones():
 
         self.T_Recorrido = (Distancia_Puntos[i][j]/self.Velocity) + T_asc 
         self.T_restante = self.T_total - self.T_Recorrido
+
+        a = round(np.interp(self.T_Recorrido,self.np_array[:,0],self.np_array[:,1]))
+        print(a)
+
         
         if self.T_Recorrido > T_WP:
             self.T_Recorrido = ((Distancia_Puntos[i][j] - Distancia_Puntos[i][2])/self.Velocity) + T_asc
@@ -45,9 +50,7 @@ class Mediciones():
         if j == 0:
             self.T_restante = 0
 
-        print(self.T_restante)
         self.T_disponible = abs(self.T_Charge - self.T_Recorrido)
-        print(self.T_disponible)
     
     def EstacionClimatica(self,Temperatura,Humedad,Velocidad_Viento):
         if (Velocidad_Viento >= 21) and (Velocidad_Viento <= 34):

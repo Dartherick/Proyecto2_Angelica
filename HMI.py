@@ -11,7 +11,7 @@ class MainHMI(QMainWindow):
         super(MainHMI, self).__init__()
         loadUi(file,self)
         self.TabWidget.setCurrentIndex(3)
-        self.EnableTabs(False)
+        #self.EnableTabs(False)
         
         #camera
         self.EnableButton.clicked.connect(self.disconnectCamera)  # Connect the button click to disconnectCamera
