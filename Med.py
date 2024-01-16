@@ -17,6 +17,7 @@ class Mediciones():
         self.Disponibilidad = False
         self.Clima = None
         self.Resultado = False
+        self.BatteryPercentage = 0
 
         Ts = (0,75,150,225,300,375,450,525,600,675,750,825,900,975,1050,1125,1200,1275,1350,1425,1500)
         BatteryPercentage = (100,90,82,77,75,74.4,73.8,73,72.4,72,71.4,70.8,70.4,70,66,60,56,50,40,32,19.6)
@@ -28,7 +29,6 @@ class Mediciones():
         self.Datos_Temperatura = np.zeros([1,2], dtype=float)
         self.Datos_Viento = np.zeros([1,2], dtype=float)
         self.Fact = False
-        #self.InitialTime = time.time()
 
     def Factibilidad(self,i,j):
         self.Distancia_total = (0,40182.6, 44571.4, 42821.5)
@@ -46,7 +46,7 @@ class Mediciones():
         self.T_Recorrido = (Distancia_Puntos[i][j]/self.Velocity) + T_asc 
         self.T_restante = self.T_total - self.T_Recorrido
 
-        #a = round(np.interp(self.T_Recorrido,self.np_array[:,0],self.np_array[:,1]))
+        self.BatteryPercentage = round(np.interp(self.T_Recorrido,self.np_array[:,0],self.np_array[:,1]))
         
         if self.T_Recorrido > T_WP:
             self.T_Recorrido = ((Distancia_Puntos[i][j] - Distancia_Puntos[i][2])/self.Velocity) + T_asc
@@ -88,3 +88,9 @@ class Mediciones():
             #90% probabilidad de lluvia - vientos fuertes, puede llover de 7 a 30 minutos
             elif ((Temperatura >= 39.9) and (Temperatura <= 60)) and ((Humedad >= 19.6) and (Humedad <= 48.2)):
                 self.Clima = 5
+
+    def Aceptabilidad(self):
+        if self.Fact and self.Disponibilidad and self.Clima == 1:
+            self.Resultado = True
+        else:
+            self.Resultado = False
