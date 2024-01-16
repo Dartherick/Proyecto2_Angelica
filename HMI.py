@@ -10,7 +10,7 @@ class MainHMI(QMainWindow):
     def __init__(self,file):
         super(MainHMI, self).__init__()
         loadUi(file,self)
-        self.TabWidget.setCurrentIndex(3)
+        self.TabWidget.setCurrentIndex(4)
         #self.EnableTabs(False)
         
         #camera

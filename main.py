@@ -11,7 +11,8 @@ from Med import Mediciones
 
 from Camera import Camera
 import threading
-from time import sleep
+from time import sleep,time
+import numpy as np
 
 def StartFunction(Status,ProgressBar,Start,End,Time):
     HMI.ProgressBar_Progression(ProgressBar,Start,End,Time)
@@ -23,12 +24,12 @@ def Factibilidad():
 
     Fact.Factibilidad(Ruta,Punto)
 
-    if Fact.T_restante < Fact.T_disponible:
-        HMI.FactibilidadLabel.setStyleSheet("background-color: red ; border: 1px solid black")
-        HMI.FactibilidadLabel.setText("No factible!")
-    else:  
+    if Fact.Fact:
         HMI.FactibilidadLabel.setStyleSheet("background-color: green; border: 1px solid black")
         HMI.FactibilidadLabel.setText("Factible!")
+    else:  
+        HMI.FactibilidadLabel.setStyleSheet("background-color: red ; border: 1px solid black")
+        HMI.FactibilidadLabel.setText("No factible!")
 
     HMI.TimeRest.setText(str(round(Fact.T_restante,2))+"s")
     HMI.TimeTotal.setText(str(round(Fact.T_total,2))+"s")
@@ -44,20 +45,50 @@ def on_ui_exit():
 def MessageFunc():
     while not exit_flag.is_set():
         Function,Message = serial_connection.ReceiveMessage()
-
+        print(F"{Function} {Message}")
         if Function is not None or Message is not None:
-            if Function == "80": #Temperatura
-                HMI.Temperature_Label.setText(f"Temperatura {Message}C")
-            elif Function == "90": #Humedad
-                HMI.Humidity_Label.setText(f"Humedad {Message}")
-            elif Function == "10": #Velocidad viento
+            if Function == "00" and Message == "1": #Dron detectado
+                sleep(0.2)
+                serial_connection.SendMessage("20001")
 
+            elif Function == "30" and Message == "001": #Disponibilidad 
+                Fact.Disponibilidad = True
+            
+            elif Function == "30" and Message == "002": #Dron en la base giratoria
+                print(Arducam.Triangle_Detected)
+                while True:
+                    if Arducam.Triangle_Detected:
+                        serial_connection.SendMessage("41001")
+                    
+                    Function,Message = serial_connection.ReceiveMessage()
+
+                    if Function == "40" and Message == "001": #Arduino recibio correctamente el mensaje 41001
+                        break
+
+            elif Function == "40" and Message == "002": #Dron en la posicion de cambio de bateria
+                for i in range(10):
+                    #serial_connection.SendMessage("50003")
+                    sleep(1)
+
+            elif Function == "80": #Temperatura
+                Fact.Datos_Temperatura = np.concatenate([Fact.Datos_Temperatura, [[time.time() - InitialTime, float(Message)]]])
+                if HMI.TabWidget.currentIndex() == 0:
+                    HMI.Temperature_Label.setText(f"Temperatura {Message}C")
+            
+            elif Function == "90": #Humedad
+                Fact.Datos_Humedad = np.concatenate([Fact.Datos_Humedad, [[time.time() - InitialTime, float(Message)]]])
+                if HMI.TabWidget.currentIndex() == 0:
+                    HMI.Humidity_Label.setText(f"Humedad {Message}")
+            
+            elif Function == "10": #Velocidad viento
                 '''
                 0-5.5V = 0-6000RPM
                 1 Km/h = 63RPM
                 '''
                 Message = (6000*Message/5.5)/63 #Converting Volts to Km/h
-                HMI.Wind_Label.setText(f"Viento {Message}RPM")
+                Fact.Datos_Viento = np.concatenate([Fact.Datos_Viento, [[time.time() - InitialTime, float(Message)]]])
+                if HMI.TabWidget.currentIndex() == 0:
+                    HMI.Wind_Label.setText(f"Viento {Message}RPM")
 
         sleep(0.5)
 
@@ -68,6 +99,7 @@ if __name__ == "__main__":
 
     message_thread = threading.Thread(target=MessageFunc)
     exit_flag = threading.Event()
+    InitialTime = time()
 
     #camara
     Arducam = Camera(0)
