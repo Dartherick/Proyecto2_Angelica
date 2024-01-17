@@ -55,20 +55,16 @@ def MessageFunc():
                 Fact.Disponibilidad = True
             
             elif Function == "30" and Message == "002": #Dron en la base giratoria
-                while True:
-                    with triangle_lock:
-                        print(Arducam.Triangle_Detected)
-                        if Arducam.Triangle_Detected:
-                            serial_connection.SendMessage("41001")
+                Arducam.StartCam = True
+                print("-----------------------------------")
                     
-                    if Function == "40" and Message == "001": #Arduino recibio correctamente el mensaje 41001
-                        break
-
-                    Function,Message = serial_connection.ReceiveMessage()
+            elif Function == "40" and Message == "001": #Arduino recibio correctamente el mensaje 41001
+                Arducam.StartCam = False
+                print("===================================")
 
             elif Function == "40" and Message == "002": #Dron en la posicion de cambio de bateria
                 for i in range(10):
-                    #serial_connection.SendMessage("50003")
+                    serial_connection.SendMessage("50003")
                     sleep(1)
 
             elif Function == "80": #Temperatura
@@ -86,12 +82,16 @@ def MessageFunc():
                 0-5.5V = 0-6000RPM
                 1 Km/h = 63RPM
                 '''
-                Message = (6000*float(Message)/5.5)/63 #Converting Volts to Km/h
+                Message = (6000*Message/5.5)/63 #Converting Volts to Km/h
                 Fact.Datos_Viento = np.concatenate([Fact.Datos_Viento, [[time.time() - InitialTime, float(Message)]]])
                 if HMI.TabWidget.currentIndex() == 0:
                     HMI.Wind_Label.setText(f"Viento {Message}RPM")
 
         sleep(0.5)
+
+def SendMessageTriangle():
+    if Arducam.StartCam:
+        serial_connection.SendMessage("41001")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
@@ -99,7 +99,6 @@ if __name__ == "__main__":
     Fact = Mediciones()
 
     message_thread = threading.Thread(target=MessageFunc)
-    triangle_lock = threading.Lock()
     exit_flag = threading.Event()
     InitialTime = time()
 
