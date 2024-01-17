@@ -55,19 +55,16 @@ def MessageFunc():
                 Fact.Disponibilidad = True
             
             elif Function == "30" and Message == "002": #Dron en la base giratoria
-                print(Arducam.Triangle_Detected)
-                while True:
-                    if Arducam.Triangle_Detected:
-                        serial_connection.SendMessage("41001")
+                Arducam.StartCam = True
+                print("-----------------------------------")
                     
-                    Function,Message = serial_connection.ReceiveMessage()
-
-                    if Function == "40" and Message == "001": #Arduino recibio correctamente el mensaje 41001
-                        break
+            elif Function == "40" and Message == "001": #Arduino recibio correctamente el mensaje 41001
+                Arducam.StartCam = False
+                print("===================================")
 
             elif Function == "40" and Message == "002": #Dron en la posicion de cambio de bateria
                 for i in range(10):
-                    #serial_connection.SendMessage("50003")
+                    serial_connection.SendMessage("50003")
                     sleep(1)
 
             elif Function == "80": #Temperatura
@@ -91,6 +88,10 @@ def MessageFunc():
                     HMI.Wind_Label.setText(f"Viento {Message}RPM")
 
         sleep(0.5)
+
+def SendMessageTriangle():
+    if Arducam.StartCam:
+        serial_connection.SendMessage("41001")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
