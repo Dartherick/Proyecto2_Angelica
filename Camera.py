@@ -16,8 +16,9 @@ class Camera(QObject):
         self.redAlto1 = np.array([8, 255, 255], np.uint8)
         self.redBajo2 = np.array([175, 100, 20], np.uint8)
         self.redAlto2 = np.array([179, 255, 255], np.uint8)
+
         self.SendMessage = False
-        self.Triangle_Detected = False
+        self.StartCam = False
 
     def start(self):
         self._is_running = True
@@ -87,12 +88,7 @@ class Camera(QObject):
                         if len(approx) == 3:
                             cv2.drawContours(self.cap, [contour], 0, colour, 3)  #Drawing the outer-edges onto the image
                             cv2.putText(self.cap, "Triangle", coords, font, 1, colour, 1) # Text on the image
-                            #self.detect_triangle.emit()
-                            self.Triangle_Detected = True
-                        else:
-                            self.Triangle_Detected = False
-                    else:
-                        self.Triangle_Detected = False
+                            self.detect_triangle.emit()
 
                 self.frameReady.emit(self.cap)
 
