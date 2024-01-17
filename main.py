@@ -56,11 +56,11 @@ def MessageFunc():
             
             elif Function == "30" and Message == "002": #Dron en la base giratoria
                 Arducam.StartCam = True
-                print("-----------------------------------")
+                print("----Camara encendida----")
                     
             elif Function == "40" and Message == "001": #Arduino recibio correctamente el mensaje 41001
                 Arducam.StartCam = False
-                print("===================================")
+                print("----Camara apagada----")
 
             elif Function == "40" and Message == "002": #Dron en la posicion de cambio de bateria
                 for i in range(10):
@@ -105,7 +105,7 @@ if __name__ == "__main__":
     #camara
     Arducam = Camera(0)
     Arducam.frameReady.connect(HMI.updateFrame)
-    Arducam.detect_triangle.connect(lambda : serial_connection.SendMessage('41001'))
+    Arducam.detect_triangle.connect(SendMessageTriangle)
     Arducam.start()
 
     # Factibilidad
