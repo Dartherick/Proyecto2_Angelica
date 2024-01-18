@@ -20,8 +20,9 @@ class Mediciones(QObject):
                       "Hospital Municipal Villa Altagracia - Hospital Bonao")
         
         self.Disponibilidad = False
-        self.Clima = False #clima
+        self.Clima = True #clima
         self.Resultado = False
+        self.Fact = False
         self.BatteryPercentage = 0
 
         Ts = (0,75,150,225,300,375,450,525,600,675,750,825,900,975,1050,1125,1200,1275,1350,1425,1500)
@@ -33,7 +34,6 @@ class Mediciones(QObject):
         self.Datos_Humedad = np.zeros([1,2], dtype=float)
         self.Datos_Temperatura = np.zeros([1,2], dtype=float)
         self.Datos_Viento = np.zeros([1,2], dtype=float)
-        self.Fact = False
 
     def Factibilidad(self,i,j):
         self.Distancia_total = (0,40182.6, 44571.4, 42821.5)

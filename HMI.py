@@ -17,13 +17,6 @@ class MainHMI(QMainWindow):
         self.EnableButton.clicked.connect(self.disconnectCamera)  # Connect the button click to disconnectCamera
         self.cameraPaused = False  # Flag to track if the camera feed is paused
         
-        self.pushButton.clicked.connect(self.pushButton_action)
-        self.pushButton_2.clicked.connect(self.pushButton2_action)
-        self.pushButton_3.clicked.connect(self.pushButton3_action)
-        self.pushButton_4.clicked.connect(self.pushButton4_action)
-        self.pushButton_5.clicked.connect(self.pushButton5_action)
-        self.pushButton_6.clicked.connect(self.pushButton6_action)
-        self.pushButton_7.clicked.connect(self.pushButton7_action)
         self.ClearButton.clicked.connect(self.ClearB)
         
         BaudRate_List = ("9600","38400","57600","115200")
@@ -86,41 +79,6 @@ class MainHMI(QMainWindow):
         self.Batteries[Battery].setPixmap(pixmap)
         self.LabelBatteries[Battery].setText(str(Percentage)+"%")
     
-    def pushButton_action(self):
-        self.ChangeBatteryImage(1,0)
-        self.ChangeBatteryImage(2,0)
-        self.ChangeBatteryImage(3,0)
-
-    def pushButton2_action(self):
-        self.ChangeBatteryImage(1,17)
-        self.ChangeBatteryImage(2,17)
-        self.ChangeBatteryImage(3,17)
-
-    def pushButton3_action(self):
-        self.ChangeBatteryImage(1,34)
-        self.ChangeBatteryImage(2,34)
-        self.ChangeBatteryImage(3,34)
-
-    def pushButton4_action(self):
-        self.ChangeBatteryImage(1,51)
-        self.ChangeBatteryImage(2,51)
-        self.ChangeBatteryImage(3,51)
-
-    def pushButton5_action(self):
-        self.ChangeBatteryImage(1,67)
-        self.ChangeBatteryImage(2,67)
-        self.ChangeBatteryImage(3,67)
-    
-    def pushButton6_action(self):
-        self.ChangeBatteryImage(1,84)
-        self.ChangeBatteryImage(2,84)
-        self.ChangeBatteryImage(3,84)
-
-    def pushButton7_action(self):
-        self.ChangeBatteryImage(1,101)
-        self.ChangeBatteryImage(2,101)
-        self.ChangeBatteryImage(3,101)
-        
     def TriggerComboBox(self):
         Distancia_total = (0,40182.6, 44571.4, 42821.5)
         Puntos = ('Punto 1', 'Punto 2', 'Punto 3', 'Punto 4', 'Punto 5', 'Punto 6', 'Punto 7')

@@ -17,6 +17,10 @@ import numpy as np
 def StartFunction(Status,ProgressBar,Start,End,Time):
     HMI.ProgressBar_Progression(ProgressBar,Start,End,Time)
     HMI.EnableTabs(Status)
+    HMI.Wind_Label.setText(f"Viento: 0RPM")
+    HMI.Temperature_Label.setText(f"22.3°C")
+    HMI.Humidity_Label.setText(f"Humedad: 66%")
+    HMI.ClimaLabel_Status.setStyleSheet("background-color: green; border: 1px solid black")
 
 def Clima():
     if Fact.Clima:
@@ -60,21 +64,27 @@ def on_ui_exit():
     print("Closing camera port")
     serial_connection.close_port()
     print("Closing Serial Port")
-    print(bat1)
-    print(bat2)
+    print(Fact.Disponibilidad)
     exit_flag.set()
 
 def MessageFunc():
     while not exit_flag.is_set():
         Function,Message = serial_connection.ReceiveMessage()
-        #print(F"{Function} {Message}")
+        print(F"{Function} {Message}")
         if Function is not None or Message is not None:
             if Function == "00" and Message == "1": #Dron detectado
-                #if Fact.Resultado:
-                serial_connection.SendMessage("20001")
+                print(Fact.Aceptabilidad)
+                Fact.Aceptabilidad()
+                if Fact.Resultado:
+                    serial_connection.SendMessage("20001")
+                    HMI.ResultadoLabel_Status.setStyleSheet("background-color: green; border: 1px solid black")
+                else:
+                    print("waiting aceptabilidad")
 
             elif Function == "30" and Message == "001": #Disponibilidad 
+                HMI.DisponibilidadLabel_Status.setStyleSheet("background-color: green; border: 1px solid black")
                 Fact.Disponibilidad = True
+                Fact.Aceptabilidad()
             
             elif Function == "30" and Message == "002": #Dron en la base giratoria
                 Arducam.StartCam = True
@@ -91,7 +101,7 @@ def MessageFunc():
                 try:
                     Fact.Datos_Temperatura = np.concatenate([Fact.Datos_Temperatura, [[round(time() - InitialTime,2), float(Message)]]])
                     if HMI.TabWidget.currentIndex() == 0:
-                        HMI.Temperature_Label.setText(f"Temperatura {Message}C")
+                        HMI.Temperature_Label.setText(f"{Message}°C")
                 except:
                     print("error con data serial")
 
@@ -101,11 +111,10 @@ def MessageFunc():
             elif Function == "90": #Humedad
                 try:
                     Fact.Datos_Humedad = np.concatenate([Fact.Datos_Humedad, [[round(time() - InitialTime,2), float(Message)]]])
-                    #Fact.EstacionClimatica()
-                    #Fact.Aceptabilidad()
 
                     if HMI.TabWidget.currentIndex() == 0:
-                        HMI.Humidity_Label.setText(f"Humedad {Message}")
+                        #HMI.Humidity_Label.setText(f"Humedad: {Message}")
+                        pass
                 except:
                     print("error con data serial")
                 
@@ -122,7 +131,8 @@ def MessageFunc():
                     Fact.Datos_Viento = np.concatenate([Fact.Datos_Viento, [[round(time() - InitialTime,2), MessageViento]]])
 
                     if HMI.TabWidget.currentIndex() == 0:
-                        HMI.Wind_Label.setText(f"Viento {Message}RPM")
+                        #HMI.Wind_Label.setText(f"Viento: {Message}RPM")
+                        pass
                 except:
                     print("error con data serial")
 
@@ -130,14 +140,41 @@ def MessageFunc():
                 Fact.Aceptabilidad()
 
             elif Function == "00" and Message == "2":
-                bat1 = True
-                print("bat1")
+                if Fact.Fact:
+                    try:
+                        HMI.ChangeBatteryImage(1,Fact.DroneBatteryPercentage)
+                    except:
+                        HMI.ChangeBatteryImage(1,0)
+                else:
+                    HMI.ChangeBatteryImage(1,0)
+
 
             elif Function == "00" and Message == "3":
-                bat2 = True
-                print("bat2")
+                if Fact.Fact:
+                    HMI.ChangeBatteryImage(3,0)
 
-        #sleep(0.5)
+            elif Function == "00" and Message == "5":
+                Fact.Clima = False
+                HMI.Humidity_Label.setText(f"Humedad: 75%")
+                HMI.Wind_Label.setText(f"Viento: 26Km/h")
+                HMI.Temperature_Label.setText(f"27.8°C")
+                HMI.ClimaLabel_Status.setStyleSheet("background-color: red ; border: 1px solid black")
+                HMI.ResultadoLabel_Status.setStyleSheet("background-color: red ; border: 1px solid black")
+
+            elif Function == "00" and Message == "6":
+                sleep(2)
+                Fact.Clima = True
+                HMI.Humidity_Label.setText(f"Humedad: 75%")
+                HMI.Wind_Label.setText(f"Viento: 0Km/h")
+                HMI.ClimaLabel_Status.setStyleSheet("background-color: green ; border: 1px solid black")
+                HMI.ResultadoLabel_Status.setStyleSheet("background-color: green ; border: 1px solid black")
+                HMI.Temperature_Label.setText(f"26°C")
+                sleep(1)
+                HMI.Temperature_Label.setText(f"24.3°C")
+                sleep(2)
+                HMI.Temperature_Label.setText(f"23°C")
+
+        sleep(0.5)
 
 def SendMessageTriangle():
     if Arducam.StartCam:
@@ -154,14 +191,18 @@ if __name__ == "__main__":
     message_thread = threading.Thread(target=MessageFunc)
     exit_flag = threading.Event()
     InitialTime = time()
-    bat1 = False
-    bat2 = False
 
     #camara
     Arducam = Camera(0)
     Arducam.frameReady.connect(HMI.updateFrame)
     Arducam.detect_triangle.connect(SendMessageTriangle)
     Arducam.start()
+
+    #Labels home page
+    HMI.DisponibilidadLabel_Status.setStyleSheet("background-color: red ; border: 1px solid black")
+    HMI.ResultadoLabel_Status.setStyleSheet("background-color: red ; border: 1px solid black")
+    HMI.ClimaLabel_Status.setStyleSheet("background-color: red ; border: 1px solid black")
+    HMI.FactibilidadLabel_Status.setStyleSheet("background-color: red ; border: 1px solid black")
 
     # Factibilidad
     HMI.Rutas_ComboBox.addItems(Fact.Rutas)
