@@ -62,20 +62,6 @@ class SerialPortConnection(QObject):
                 print(Message)
         else:
             print('Please select M# first')
-
-    def ReceiveMessagetemp(self):
-        if self.serial is not None and self.serial.is_open:
-            Message = self.serial.readline().decode().replace('\r\n','')
-            print("hola")
-            if Message:
-                if (Message[0] == "<") and (Message[-1] == ">"):
-                    Function = Message[1:3]
-                    Parsed_Message = Message[3:-1]
-                    return Function,Parsed_Message
-            else:
-                return None,None
-        else:
-            return None,None
         
     def ReceiveMessage(self):
         if self.serial is not None and self.serial.is_open:

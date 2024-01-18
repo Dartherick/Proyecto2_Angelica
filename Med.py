@@ -2,7 +2,10 @@ import numpy as np
 import time
 
 class Mediciones():
+    #Clima_Signal = pyqtSignal()
+
     def __init__(self):
+        #super().__init__()
         #Factibilidad
         self.Velocity = 20
         self.Altitud = 85
@@ -15,7 +18,7 @@ class Mediciones():
                       "Hospital Municipal Villa Altagracia - Hospital Bonao")
         
         self.Disponibilidad = False
-        self.Clima = None
+        self.Clima = False #clima
         self.Resultado = False
         self.BatteryPercentage = 0
 
@@ -62,35 +65,29 @@ class Mediciones():
         else:
             self.Fact = False
     
-    def EstacionClimatica(self,Temperatura,Humedad,Velocidad_Viento):
-        if Velocidad_Viento == 0:
-            #Ambiente
-            #Baja probabilidad de lluvias - Vientos normales
-            if ((Temperatura >= 25) and (Temperatura <= 26)) and ((Humedad >= 66) and (Humedad <= 74.5)):
-                self.Clima = 1
-        
-        elif (Velocidad_Viento >= 1) and (Velocidad_Viento <= 33):
-            #Ambiente - Slow
-            #Baja probabilidad de lluvia - Vientos Normales
-            if ((Temperatura >= 25.1) and (Temperatura <= 26.3)) and ((Humedad >= 67.5) and (Humedad <= 75.1)):
-                self.Clima = 2
-            #Caliente - Slow
-            #40% probabilidad de lluvia - vientos normales, puede llover de 1 a 5 horas
-            elif ((Temperatura >= 30.4) and (Temperatura <= 36.4)) and ((Humedad >= 31.5) and (Humedad <= 61.3)):
-                self.Clima = 4
-        
-        elif (Velocidad_Viento >= 34) and (Velocidad_Viento <= 39):
-            #Ambiente - Fast
-            #Baja probabilidad de lluvia - vientos fuertes
-            if ((Temperatura >= 27.4) and (Temperatura <= 28.9)) and ((Humedad >= 65.3) and (Humedad <= 67.95)):
-                self.Clima = 3
-            #Caliente - Fast
-            #90% probabilidad de lluvia - vientos fuertes, puede llover de 7 a 30 minutos
-            elif ((Temperatura >= 39.9) and (Temperatura <= 60)) and ((Humedad >= 19.6) and (Humedad <= 48.2)):
-                self.Clima = 5
+    def EstacionClimatica(self):
+        if (len(self.Datos_Humedad) != 1) and (len(self.Datos_Temperatura) !=1) and (len(self.Datos_Viento) != 1):
+            Humeda              =   self.Datos_Humedad[-1][1]
+            Temperatura         =   self.Datos_Temperatura[-1][1]
+            Velocidad_Viento    =   self.Datos_Viento[-1][1]
+
+            if Velocidad_Viento == 0:
+                self.Clima = True
+            
+            elif (Velocidad_Viento >= 1) and (Velocidad_Viento <= 33):
+                self.Clima = True
+            
+            elif (Velocidad_Viento >= 34) and (Velocidad_Viento <= 39):
+                self.Clima = False
+
 
     def Aceptabilidad(self):
-        if self.Fact and self.Disponibilidad and self.Clima == 1:
+        if self.Fact and self.Disponibilidad and self.Clima:
             self.Resultado = True
         else:
             self.Resultado = False
+
+        print(f"Clima resultado = {self.Clima}")
+        #print(f"Fact resultado = {self.Fact}")
+        #print(f"Disponibilidad resultado = {self.Disponibilidad}")
+        #print(f"Aceptabilidad = {self.Resultado}")

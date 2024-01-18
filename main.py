@@ -40,15 +40,17 @@ def on_ui_exit():
     print("Closing camera port")
     serial_connection.close_port()
     print("Closing Serial Port")
+    print(bat1)
+    print(bat2)
     exit_flag.set()
 
 def MessageFunc():
     while not exit_flag.is_set():
         Function,Message = serial_connection.ReceiveMessage()
-        print(F"{Function} {Message}")
+        #print(F"{Function} {Message}")
         if Function is not None or Message is not None:
             if Function == "00" and Message == "1": #Dron detectado
-                sleep(0.2)
+                #if Fact.Resultado:
                 serial_connection.SendMessage("20001")
 
             elif Function == "30" and Message == "001": #Disponibilidad 
@@ -63,31 +65,61 @@ def MessageFunc():
                 print("----Camara apagada----")
 
             elif Function == "40" and Message == "002": #Dron en la posicion de cambio de bateria
-                for i in range(10):
                     serial_connection.SendMessage("50003")
-                    sleep(1)
 
             elif Function == "80": #Temperatura
-                Fact.Datos_Temperatura = np.concatenate([Fact.Datos_Temperatura, [[time.time() - InitialTime, float(Message)]]])
-                if HMI.TabWidget.currentIndex() == 0:
-                    HMI.Temperature_Label.setText(f"Temperatura {Message}C")
+                try:
+                    Fact.Datos_Temperatura = np.concatenate([Fact.Datos_Temperatura, [[round(time() - InitialTime,2), float(Message)]]])
+                    print(Message)
+
+                    if HMI.TabWidget.currentIndex() == 0:
+                        HMI.Temperature_Label.setText(f"Temperatura {Message}C")
+                except:
+                    print("error con data serial")
+
+                Fact.EstacionClimatica()
+                Fact.Aceptabilidad()
             
             elif Function == "90": #Humedad
-                Fact.Datos_Humedad = np.concatenate([Fact.Datos_Humedad, [[time.time() - InitialTime, float(Message)]]])
-                if HMI.TabWidget.currentIndex() == 0:
-                    HMI.Humidity_Label.setText(f"Humedad {Message}")
+                try:
+                    Fact.Datos_Humedad = np.concatenate([Fact.Datos_Humedad, [[round(time() - InitialTime,2), float(Message)]]])
+                    #Fact.EstacionClimatica()
+                    #Fact.Aceptabilidad()
+
+                    if HMI.TabWidget.currentIndex() == 0:
+                        HMI.Humidity_Label.setText(f"Humedad {Message}")
+                except:
+                    print("error con data serial")
+                
+                Fact.EstacionClimatica()
+                Fact.Aceptabilidad()
             
             elif Function == "10": #Velocidad viento
                 '''
                 0-5.5V = 0-6000RPM
                 1 Km/h = 63RPM
                 '''
-                Message = (6000*Message/5.5)/63 #Converting Volts to Km/h
-                Fact.Datos_Viento = np.concatenate([Fact.Datos_Viento, [[time.time() - InitialTime, float(Message)]]])
-                if HMI.TabWidget.currentIndex() == 0:
-                    HMI.Wind_Label.setText(f"Viento {Message}RPM")
+                try:
+                    MessageViento = round((6000*float(Message)/5.5)/63 ,2) #Converting Volts to Km/h
+                    Fact.Datos_Viento = np.concatenate([Fact.Datos_Viento, [[round(time() - InitialTime,2), MessageViento]]])
 
-        sleep(0.5)
+                    if HMI.TabWidget.currentIndex() == 0:
+                        HMI.Wind_Label.setText(f"Viento {Message}RPM")
+                except:
+                    print("error con data serial")
+
+                Fact.EstacionClimatica()
+                Fact.Aceptabilidad()
+
+            elif Function == "00" and Message == "2":
+                bat1 = True
+                print("bat1")
+
+            elif Function == "00" and Message == "3":
+                bat2 = True
+                print("bat2")
+
+        #sleep(0.5)
 
 def SendMessageTriangle():
     if Arducam.StartCam:
@@ -101,6 +133,8 @@ if __name__ == "__main__":
     message_thread = threading.Thread(target=MessageFunc)
     exit_flag = threading.Event()
     InitialTime = time()
+    bat1 = False
+    bat2 = False
 
     #camara
     Arducam = Camera(0)
