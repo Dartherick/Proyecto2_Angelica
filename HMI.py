@@ -16,7 +16,6 @@ class MainHMI(QMainWindow):
         #camera
         self.EnableButton.clicked.connect(self.disconnectCamera)  # Connect the button click to disconnectCamera
         self.cameraPaused = False  # Flag to track if the camera feed is paused
-
         
         self.pushButton.clicked.connect(self.pushButton_action)
         self.pushButton_2.clicked.connect(self.pushButton2_action)
@@ -51,11 +50,20 @@ class MainHMI(QMainWindow):
                           2:self.Battery2,
                           3:self.Battery3,
                           }
+        
+        self.LabelBatteries = { 1:self.Battery1_Label,
+                                2:self.Battery2_Label,
+                                3:self.Battery3_Label,
+                                }
 
-        pixmap = QtGui.QPixmap(self.ImagePaths[0])
-        self.Batteries[1].setPixmap(pixmap)
-        self.Batteries[2].setPixmap(pixmap)
-        self.Batteries[3].setPixmap(pixmap)
+        #pixmap = QtGui.QPixmap(self.ImagePaths[0])
+        #self.Batteries[1].setPixmap(pixmap)
+        #self.Batteries[2].setPixmap(pixmap)
+        #self.Batteries[3].setPixmap(pixmap)
+        self.ChangeBatteryImage(1,0)
+        self.ChangeBatteryImage(2,78)
+        self.ChangeBatteryImage(3,96)
+        
 
     def ChangeBatteryImage(self,Battery,Percentage):
         BarPercentage = 100/5
@@ -76,6 +84,7 @@ class MainHMI(QMainWindow):
             pixmap = QtGui.QPixmap(self.ImagePaths[6])
 
         self.Batteries[Battery].setPixmap(pixmap)
+        self.LabelBatteries[Battery].setText(str(Percentage)+"%")
     
     def pushButton_action(self):
         self.ChangeBatteryImage(1,0)
@@ -144,6 +153,7 @@ class MainHMI(QMainWindow):
         self.Map.clear()
         self.TimeTotal.setText("")
         self.FactibilidadLabel.setStyleSheet("border: 1px solid black")
+        self.FactibilidadLabel_Status.setStyleSheet("border: 1px solid black")
         self.FactibilidadLabel.setText("")
         self.Rutas_ComboBox.setCurrentIndex(0)
         self.Puntos_ComboBox.clear()

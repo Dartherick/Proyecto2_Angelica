@@ -2,7 +2,6 @@ import time
 import serial
 import serial.tools.list_ports
 from PyQt5.QtCore import QObject, pyqtSignal
-import numpy
 
 class SerialPortConnection(QObject):
     OpenStatus = pyqtSignal()

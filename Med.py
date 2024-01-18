@@ -1,11 +1,13 @@
 import numpy as np
 import time
+from PyQt5.QtCore import QObject, pyqtSignal
 
-class Mediciones():
-    #Clima_Signal = pyqtSignal()
+class Mediciones(QObject):
+    Clima_Signal = pyqtSignal()
+    Resultado_Signal = pyqtSignal()
 
     def __init__(self):
-        #super().__init__()
+        super().__init__()
         #Factibilidad
         self.Velocity = 20
         self.Altitud = 85
@@ -49,7 +51,7 @@ class Mediciones():
         self.T_Recorrido = (Distancia_Puntos[i][j]/self.Velocity) + T_asc 
         self.T_restante = self.T_total - self.T_Recorrido
 
-        self.BatteryPercentage = round(np.interp(self.T_Recorrido,self.np_array[:,0],self.np_array[:,1]))
+        self.DroneBatteryPercentage = round(np.interp(self.T_Recorrido,self.np_array[:,0],self.np_array[:,1]))
         
         if self.T_Recorrido > T_WP:
             self.T_Recorrido = ((Distancia_Puntos[i][j] - Distancia_Puntos[i][2])/self.Velocity) + T_asc
@@ -79,6 +81,8 @@ class Mediciones():
             
             elif (Velocidad_Viento >= 34) and (Velocidad_Viento <= 39):
                 self.Clima = False
+        
+        self.Clima_Signal.emit()
 
 
     def Aceptabilidad(self):
@@ -86,8 +90,10 @@ class Mediciones():
             self.Resultado = True
         else:
             self.Resultado = False
+        
+        self.Resultado_Signal.emit()
 
-        print(f"Clima resultado = {self.Clima}")
+        #print(f"Clima resultado = {self.Clima}")
         #print(f"Fact resultado = {self.Fact}")
         #print(f"Disponibilidad resultado = {self.Disponibilidad}")
         #print(f"Aceptabilidad = {self.Resultado}")

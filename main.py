@@ -18,6 +18,24 @@ def StartFunction(Status,ProgressBar,Start,End,Time):
     HMI.ProgressBar_Progression(ProgressBar,Start,End,Time)
     HMI.EnableTabs(Status)
 
+def Clima():
+    if Fact.Clima:
+        HMI.ClimaLabel.Status.setStyleSheet("background-color: green; border: 1px solid black")
+    else:
+        HMI.ClimaLabel.Status.setStyleSheet("background-color: red ; border: 1px solid black")
+
+def Disponibilidad():
+    if Fact.Disponibilidad:
+        HMI.DisponibilidadLabel.Status.setStyleSheet("background-color: green; border: 1px solid black")
+    else:
+        HMI.DisponibilidadLabel.Status.setStyleSheet("background-color: red ; border: 1px solid black")
+
+def Resultado():
+    if Fact.Resultado:
+        HMI.ResultadoLabel.Status.setStyleSheet("background-color: green; border: 1px solid black")
+    else:
+        HMI.ResultadoLabel.Status.setStyleSheet("background-color: red ; border: 1px solid black")
+
 def Factibilidad():
     Ruta = HMI.Rutas_ComboBox.currentIndex() 
     Punto = HMI.Puntos_ComboBox.currentIndex() 
@@ -27,9 +45,11 @@ def Factibilidad():
     if Fact.Fact:
         HMI.FactibilidadLabel.setStyleSheet("background-color: green; border: 1px solid black")
         HMI.FactibilidadLabel.setText("Factible!")
+        HMI.FactibilidadLabel_Status.setStyleSheet("background-color: green; border: 1px solid black")
     else:  
         HMI.FactibilidadLabel.setStyleSheet("background-color: red ; border: 1px solid black")
         HMI.FactibilidadLabel.setText("No factible!")
+        HMI.FactibilidadLabel_Status.setStyleSheet("background-color: red ; border: 1px solid black")
 
     HMI.TimeRest.setText(str(round(Fact.T_restante,2))+"s")
     HMI.TimeTotal.setText(str(round(Fact.T_total,2))+"s")
@@ -70,8 +90,6 @@ def MessageFunc():
             elif Function == "80": #Temperatura
                 try:
                     Fact.Datos_Temperatura = np.concatenate([Fact.Datos_Temperatura, [[round(time() - InitialTime,2), float(Message)]]])
-                    print(Message)
-
                     if HMI.TabWidget.currentIndex() == 0:
                         HMI.Temperature_Label.setText(f"Temperatura {Message}C")
                 except:
@@ -125,6 +143,9 @@ def SendMessageTriangle():
     if Arducam.StartCam:
         serial_connection.SendMessage("41001")
 
+def AddBatteryImage():
+    HMI.ChangeBatteryImage(1,Fact.DroneBatteryPercentage)
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     HMI = MainHMI("HMI.ui")
@@ -161,9 +182,10 @@ if __name__ == "__main__":
 
     serial_connection.OpenStatus.connect(lambda: (StartFunction(True, HMI.SerialProgressBar, 0, 100, 5), message_thread.start()))
     serial_connection.DisableStatus.connect(lambda : (StartFunction(False,HMI.SerialProgressBar,100,0,5), exit_flag.set()))
+    
     #no funciona
     #serial_connection.UpdatedPortList.connect(lambda : HMI.Refresh_Serial_Ports(sorted(serial_connection.Refresh_Ports())))
-    serial_connection.UpdatedPortList.connect(lambda : sorted(serial_connection.Refresh_Ports()))
+    #serial_connection.UpdatedPortList.connect(lambda : sorted(serial_connection.Refresh_Ports()))
 
     # Connect the aboutToQuit signal to the on_ui_exit function
     app.aboutToQuit.connect(on_ui_exit)
